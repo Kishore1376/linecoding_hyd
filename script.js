@@ -16,30 +16,7 @@ document.querySelectorAll('.nav-bar a').forEach(link => {
   });
 });
 
-function autoConnectForMobile() {
-  if (!window.matchMedia("(pointer: coarse)").matches) return;
 
-  const requiredConnections = [
-    { from: 'encoder', to: 'oscilloscope' },
-    { from: 'encoder', to: 'psd' }
-  ];
-
-  requiredConnections.forEach(link => {
-    const exists = connections.some(conn =>
-      conn.start.block === link.from &&
-      conn.end.block === link.to
-    );
-
-    if (!exists) {
-      connections.push({
-        start: { block: link.from, type: 'output' },
-        end:   { block: link.to,   type: 'input'  }
-      });
-    }
-  });
-
-  updateConnections();
-}
 
 // Block Diagram Interactions
 let draggedBlock = null;
