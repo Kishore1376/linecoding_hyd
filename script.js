@@ -16,6 +16,34 @@ document.querySelectorAll('.nav-bar a').forEach(link => {
   });
 });
 
+function isMobileDevice() {
+  return window.matchMedia("(pointer: coarse)").matches;
+}
+function autoConnectForMobile() {
+  if (!isMobileDevice()) return;
+
+  const alreadyConnected = connections.some(conn =>
+    conn.start.block === 'encoder' &&
+    conn.end.block === 'oscilloscope'
+  );
+
+  if (alreadyConnected) return;
+
+  connections.push({
+    start: {
+      block: 'encoder',
+      type: 'output'
+    },
+    end: {
+      block: 'oscilloscope',
+      type: 'input'
+    }
+  });
+
+  updateConnections();
+}
+
+
 // Block Diagram Interactions
 let draggedBlock = null;
 let offsetX, offsetY;
@@ -29,118 +57,104 @@ const container = document.getElementById('diagramContainer');
 const svg = document.getElementById('connectionSvg');
 
 blocks.forEach(block => {
-  ['mousedown', 'touchstart'].forEach(eventType => {
-    block.addEventListener(eventType, (e) => {
-      if (e.target.classList.contains('connection-point')) return;
-      
-      const touch = e.touches ? e.touches[0] : e;
-      draggedBlock = block;
-      const rect = block.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      offsetX = touch.clientX - rect.left;
-      offsetY = touch.clientY - rect.top;
-      block.classList.add('dragging');
-    });
+  block.addEventListener('mousedown', (e) => {
+    if (e.target.classList.contains('connection-point')) return;
+    
+    draggedBlock = block;
+    const rect = block.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    block.classList.add('dragging');
   });
 });
 
-['mousemove', 'touchmove'].forEach(eventType => {
-  document.addEventListener(eventType, (e) => {
-    const touch = e.touches ? e.touches[0] : e;
+document.addEventListener('mousemove', (e) => {
+  if (draggedBlock) {
+    const containerRect = container.getBoundingClientRect();
+    let x = e.clientX - containerRect.left - offsetX;
+    let y = e.clientY - containerRect.top - offsetY;
     
-    if (draggedBlock) {
-      const containerRect = container.getBoundingClientRect();
-      let x = touch.clientX - containerRect.left - offsetX;
-      let y = touch.clientY - containerRect.top - offsetY;
-      
-      x = Math.max(0, Math.min(x, container.offsetWidth - draggedBlock.offsetWidth));
-      y = Math.max(0, Math.min(y, container.offsetHeight - draggedBlock.offsetHeight));
-      
-      draggedBlock.style.left = x + 'px';
-      draggedBlock.style.top = y + 'px';
-      
-      updateConnections();
-    }
+    x = Math.max(0, Math.min(x, container.offsetWidth - draggedBlock.offsetWidth));
+    y = Math.max(0, Math.min(y, container.offsetHeight - draggedBlock.offsetHeight));
     
-    if (isDrawing && tempLine) {
-      const containerRect = container.getBoundingClientRect();
-      const x = touch.clientX - containerRect.left;
-      const y = touch.clientY - containerRect.top;
-      tempLine.setAttribute('x2', x);
-      tempLine.setAttribute('y2', y);
-    }
-  });
+    draggedBlock.style.left = x + 'px';
+    draggedBlock.style.top = y + 'px';
+    
+    updateConnections();
+  }
+  
+  if (isDrawing && tempLine) {
+    const containerRect = container.getBoundingClientRect();
+    const x = e.clientX - containerRect.left;
+    const y = e.clientY - containerRect.top;
+    tempLine.setAttribute('x2', x);
+    tempLine.setAttribute('y2', y);
+  }
 });
 
-['mouseup', 'touchend'].forEach(eventType => {
-  document.addEventListener(eventType, () => {
-    if (draggedBlock) {
-      draggedBlock.classList.remove('dragging');
-      draggedBlock = null;
-    }
-    
-    if (tempLine && tempLine.parentNode) {
-      tempLine.parentNode.removeChild(tempLine);
-      tempLine = null;
-    }
-    isDrawing = false;
-    startPoint = null;
-  });
+document.addEventListener('mouseup', () => {
+  if (draggedBlock) {
+    draggedBlock.classList.remove('dragging');
+    draggedBlock = null;
+  }
+  
+  if (tempLine && tempLine.parentNode) {
+    tempLine.parentNode.removeChild(tempLine);
+    tempLine = null;
+  }
+  isDrawing = false;
+  startPoint = null;
 });
 
 document.querySelectorAll('.connection-point').forEach(point => {
-  ['mousedown', 'touchstart'].forEach(eventType => {
-    point.addEventListener(eventType, (e) => {
+  point.addEventListener('mousedown', (e) => {
+    e.stopPropagation();
+    if (point.dataset.type !== 'output') return;
+    
+    const rect = point.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    startPoint = {
+      x: rect.left + rect.width / 2 - containerRect.left,
+      y: rect.top + rect.height / 2 - containerRect.top,
+      block: point.dataset.block,
+      type: point.dataset.type
+    };
+    
+    isDrawing = true;
+    tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    tempLine.setAttribute('class', 'arrow-line');
+    tempLine.setAttribute('x1', startPoint.x);
+    tempLine.setAttribute('y1', startPoint.y);
+    tempLine.setAttribute('x2', startPoint.x);
+    tempLine.setAttribute('y2', startPoint.y);
+    svg.appendChild(tempLine);
+  });
+  
+  point.addEventListener('mouseup', (e) => {
+    if (isDrawing && startPoint && point.dataset.type === 'input') {
       e.stopPropagation();
-      if (point.dataset.type !== 'output') return;
-      
-      const touch = e.touches ? e.touches[0] : e;
       const rect = point.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
-      startPoint = {
+      const endPoint = {
         x: rect.left + rect.width / 2 - containerRect.left,
         y: rect.top + rect.height / 2 - containerRect.top,
         block: point.dataset.block,
         type: point.dataset.type
       };
       
-      isDrawing = true;
-      tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      tempLine.setAttribute('class', 'arrow-line');
-      tempLine.setAttribute('x1', startPoint.x);
-      tempLine.setAttribute('y1', startPoint.y);
-      tempLine.setAttribute('x2', startPoint.x);
-      tempLine.setAttribute('y2', startPoint.y);
-      svg.appendChild(tempLine);
-    });
-  });
-  
-  ['mouseup', 'touchend'].forEach(eventType => {
-    point.addEventListener(eventType, (e) => {
-      if (isDrawing && startPoint && point.dataset.type === 'input') {
-        e.stopPropagation();
-        const rect = point.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const endPoint = {
-          x: rect.left + rect.width / 2 - containerRect.left,
-          y: rect.top + rect.height / 2 - containerRect.top,
-          block: point.dataset.block,
-          type: point.dataset.type
-        };
-        
-        if (startPoint.block !== endPoint.block) {
-          connections.push({ start: startPoint, end: endPoint });
-          updateConnections();
-        }
-        
-        if (tempLine && tempLine.parentNode) {
-          tempLine.parentNode.removeChild(tempLine);
-          tempLine = null;
-        }
-        isDrawing = false;
-        startPoint = null;
+      if (startPoint.block !== endPoint.block) {
+        connections.push({ start: startPoint, end: endPoint });
+        updateConnections();
       }
-    });
+      
+      if (tempLine && tempLine.parentNode) {
+        tempLine.parentNode.removeChild(tempLine);
+        tempLine = null;
+      }
+      isDrawing = false;
+      startPoint = null;
+    }
   });
 });
 
@@ -713,6 +727,9 @@ function scaleHide(el) {
 }
 
 function drawOscilloscope() {
+
+  autoConnectForMobile();
+
   // --- HIDE EVERYTHING IF OSCILLOSCOPE NOT CONNECTED ---
   const scopeDisplay = document.querySelector('.scope-display');
   const controlsSection = document.querySelector('.controls-section');
