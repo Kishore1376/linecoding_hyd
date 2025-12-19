@@ -41,13 +41,6 @@ function autoConnectForMobile() {
   updateConnections();
 }
 
-window.addEventListener('load', () => {
-  if (window.matchMedia("(pointer: coarse)").matches) {
-    setTimeout(updateConnections, 200);
-  }
-});
-
-
 // Block Diagram Interactions
 let draggedBlock = null;
 let offsetX, offsetY;
@@ -731,9 +724,6 @@ function scaleHide(el) {
 }
 
 function drawOscilloscope() {
-
-  autoConnectForMobile();
-
   // --- HIDE EVERYTHING IF OSCILLOSCOPE NOT CONNECTED ---
   const scopeDisplay = document.querySelector('.scope-display');
   const controlsSection = document.querySelector('.controls-section');
