@@ -5,22 +5,29 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Rajdhani', sans-serif;                                                                                                                                  
   background-color: #f5d6d6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .header {
-  background-color: white;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Texturina', sans-serif;
+  font-size: large;
   padding: 15px 30px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 4px solid #ff6600;
+  background: #050713;
+  border-bottom: 2px solid #00fff7;
+  box-shadow: 0 0 20px rgba(0, 255, 247, 0.35);
 }
 
 .header h1 {
-  color: #4a90e2;
+  color: #0747a0;
   font-size: 24px;
   font-weight: normal;
 }
@@ -63,10 +70,63 @@ body {
   background-color: #2d2d6c;
 }
 
+.footer {
+  background-color: #050713;
+  border-top: 2px solid #00fff7;
+  color: #ffffff;
+  padding: 30px 20px;
+  font-family: 'Rajdhani', sans-serif;
+  box-shadow: 0 0 20px rgba(0, 255, 247, 0.35);
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer h3 {
+  color: #00fff7;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.contributors-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 15px;
+}
+
+.contributor {
+  font-size: 14px;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 12px;
+  color: #cccccc;
+}
+
+.footer a {
+  color: #00fff7;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
 .container {
   max-width: 1400px;
+  width: 100%;
   margin: 20px auto;
   padding: 20px;
+  flex: 1;
 }
 
 .page {
@@ -344,14 +404,14 @@ body {
 }
 
 .control-group {
-  background: #f9f9f9;
+  background: #410b7f;
   padding: 15px;
   border-radius: 5px;
   border: 1px solid #ddd;
 }
 
 .control-group h3 {
-  color: #3d3d8c;
+  color: #f6f6fa;
   margin-bottom: 15px;
   font-size: 14px;
   text-align: center;
@@ -373,7 +433,7 @@ body {
 
 .value-display {
   text-align: center;
-  color: #3d3d8c;
+  color: #ffffff;
   font-weight: bold;
   margin-top: 10px;
   font-size: 16px;
@@ -398,7 +458,7 @@ body {
 }
 
 .content-section p {
-  color: #333;
+  color: #f5f4f4;
   line-height: 1.6;
   margin-bottom: 15px;
 }
@@ -469,7 +529,7 @@ body {
 
 .quiz-option label {
   cursor: pointer;
-  color: #333;
+  color: #faf9f9;
   font-size: 15px;
   line-height: 1.4;
   margin: 0;
@@ -600,7 +660,7 @@ body {
 }
 
 .question-block p {
-  font-size: 17px;
+  font-size: 17px ,c;
   color: #3d3d8c;
   font-weight: 600;
   margin-bottom: 8px;
@@ -610,7 +670,7 @@ body {
   display: block;
   margin: 6px 0;
   font-size: 16px;
-  color: #333;
+  color: #f5efef;
   cursor: pointer;
 }
 
@@ -685,4 +745,194 @@ body {
   transform: translateY(20px);
   opacity: 0;
   pointer-events: none;
+}
+/* =======================
+   CYBERPUNK COLOR PALETTE
+======================= */
+:root {
+  --bg-main: #0a0f1f;
+  --panel-bg: rgba(15, 20, 40, 0.85);
+  --neon-cyan: #00fff7;
+  --neon-pink: #ff2fd1;
+  --neon-purple: #7b5cff;
+  --text-main: #feffff;
+  --text-muted: #9aa4ff;
+  --border-glow: rgba(0, 255, 247, 0.6);
+}
+
+/* =======================
+   GLOBAL
+======================= */
+body {
+  font-family: 'Orbitron', 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at top, #10183a, #050713);
+  color: var(--text-main);
+}
+
+/* =======================
+   HEADER
+======================= */
+.header {
+  background: linear-gradient(90deg, #0b102a, #11184a);
+  border-bottom: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 15px var(--border-glow);
+}
+
+.header h1 {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* =======================
+   NAV BAR
+======================= */
+.nav-bar {
+  background: #050713;
+  border-bottom: 1px solid var(--neon-purple);
+}
+
+.nav-bar a {
+  color: var(--text-main);
+  position: relative;
+}
+
+.nav-bar a:hover,
+.nav-bar a.active {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+/* =======================
+   PANELS / CARDS
+======================= */
+.block-diagram,
+.oscilloscope,
+.content-section,
+.quiz-container {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glow);
+  box-shadow:
+    0 0 15px rgba(0,255,247,0.15),
+    inset 0 0 10px rgba(0,255,247,0.05);
+}
+
+/* =======================
+   DIAGRAM AREA
+======================= */
+.diagram-container {
+  background: repeating-linear-gradient(
+    0deg,
+    #0a0f1f,
+    #0a0f1f 10px,
+    #0c1330 10px,
+    #0c1330 20px
+  );
+  border: 1px solid var(--neon-cyan);
+}
+
+/* =======================
+   BLOCKS (CYBER NODES)
+======================= */
+.diagram-block {
+  background: linear-gradient(135deg, #101a44, #070b22);
+  border: 1px solid var(--neon-purple);
+  color: var(--neon-cyan);
+  text-shadow: 0 0 6px var(--neon-cyan);
+  box-shadow:
+    0 0 12px rgba(123,92,255,0.5),
+    inset 0 0 8px rgba(0,255,247,0.15);
+}
+
+.diagram-block:hover {
+  box-shadow:
+    0 0 20px var(--neon-cyan),
+    inset 0 0 12px rgba(0,255,247,0.25);
+}
+
+.diagram-block.dragging {
+  transform: scale(1.12);
+}
+
+/* =======================
+   CONNECTION POINTS
+======================= */
+.connection-point {
+  background: var(--neon-pink);
+  box-shadow: 0 0 10px var(--neon-pink);
+}
+
+.connection-point:hover {
+  box-shadow: 0 0 18px var(--neon-pink);
+}
+
+/* =======================
+   ARROWS
+======================= */
+.arrow-line {
+  stroke: var(--neon-cyan);
+  filter: drop-shadow(0 0 6px var(--neon-cyan));
+}
+
+/* =======================
+   BUTTONS
+======================= */
+.reset-btn,
+.channel-btn,
+.quiz-btn {
+  background: linear-gradient(135deg, #ff2fd1, #7b5cff);
+  color: white;
+  border: none;
+  box-shadow: 0 0 12px rgba(255,47,209,0.6);
+}
+
+.reset-btn:hover,
+.channel-btn:hover,
+.quiz-btn:hover {
+  box-shadow: 0 0 20px rgba(0,255,247,0.9);
+}
+
+/* =======================
+   OSCILLOSCOPE
+======================= */
+.scope-display {
+  background: #02040a;
+  border: 1px solid var(--neon-cyan);
+  box-shadow: inset 0 0 30px rgba(0,255,247,0.15);
+}
+
+/* =======================
+   TEXT
+======================= */
+.content-section h2,
+.content-section h3,
+.quiz-question h3 {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 6px var(--neon-cyan);
+}
+
+p, li, label {
+  color: var(--text-main);
+}
+
+/* =======================
+   QUIZ OPTIONS
+======================= */
+.quiz-options {
+  background: rgba(5,10,25,0.8);
+  border-left: 3px solid var(--neon-pink);
+}
+
+/* =======================
+   RESULTS BOX
+======================= */
+.results-box {
+  background: linear-gradient(135deg, #0b102a, #1a237e);
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0,255,247,0.4);
+}
+
+.results-box span {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px var(--neon-pink);
 }
